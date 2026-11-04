@@ -1,6 +1,6 @@
 import { LuLogOut } from 'react-icons/lu'
 import { useAuth } from './lib/auth'
-import { supabaseConfigured } from './lib/supabase'
+import { configError, supabaseConfigured } from './lib/supabase'
 import Splash from './components/Splash'
 import { Mark } from './components/Logo'
 import Login from './pages/Login'
@@ -10,7 +10,9 @@ export default function App() {
   const { session, profile, ready, signOut } = useAuth()
 
   if (!supabaseConfigured) {
-    return <div className="splash"><Mark size={64} /><h2>Supabase ulanmagan</h2><p><code>.env</code> faylini to‘ldiring.</p></div>
+    return <div className="splash"><Mark size={64} /><h2>Supabase ulanmagan</h2>
+        <p>{configError}</p>
+        <p className="muted small">Vercel → Settings → Environment Variables da qiymatni tekshiring va qayta deploy qiling.</p></div>
   }
   if (!ready) return <Splash text="Admin panel yuklanmoqda…" />
   if (!session) return <Login />

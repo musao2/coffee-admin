@@ -3,6 +3,7 @@ import { LuActivity, LuAlertCircle, LuArrowRight, LuReceipt, LuStore, LuUsers } 
 import { supabase } from '../lib/supabase'
 import { errText } from '../lib/format'
 import { Mark } from '../components/Logo'
+import PasswordInput from '../components/PasswordInput'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -40,7 +41,7 @@ export default function Login() {
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@coffeegram.uz" autoComplete="username" required />
         </label>
         <label className="field"><span>Parol</span>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
+          <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Parolingiz" required />
         </label>
         {error && <div className="alert err"><LuAlertCircle size={18} />{error}</div>}
         <button className="btn btn-primary btn-lg btn-block" disabled={busy}>{busy ? 'Tekshirilmoqda…' : 'Kirish'} {!busy && <LuArrowRight size={18} />}</button>
