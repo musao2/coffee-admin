@@ -98,3 +98,12 @@
 .cafe-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
 
 .form { display: grid; gap: 14px; }
+.bar-inline { display: block; height: 8px; border-radius: 99px; background: var(--paper-2); overflow: hidden; min-width: 80px; flex: 1; }
+.bar-inline i { display: block; height: 100%; background: var(--ink); border-radius: 99px; }
+@media (max-width: 760px) { .table td .bar-inline { max-width: 55%; } }
+.mini-stamps { display: inline-flex; align-items: center; gap: 3px; }
+.mini-stamps i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--line); }
+.mini-stamps i.on { background: var(--ink); border-color: var(--ink); }
+.mini-stamps b { margin-left: 6px; font-size: 12px; }
+.icon-btn.sm { width: 34px; height: 34px; border-radius: 10px; }
+.icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }

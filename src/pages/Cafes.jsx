@@ -9,13 +9,12 @@ export default function Cafes() {
   const [edit, setEdit] = useState(null)
   return (
     <div className="page">
-      <PageHead title="Kofexonalar" icon={LuStore} sub="Filiallar va ularning cashback foizi">
+      <PageHead title="Kofexonalar" icon={LuStore} sub="Filiallar · kofe kartochkasi barchasida umumiy ishlaydi">
         <button className="btn btn-primary btn-sm" onClick={() => setEdit({ name: '', address: '', cashback_percent: 5, is_active: true })}><LuPlus size={16} /> Kofexona qo‘shish</button>
       </PageHead>
       <div className="cards">
         {cafes.map((c) => (
           <div key={c.id} className={`cafe-card ${c.is_active ? '' : 'off'}`}>
-            <div className="cafe-pct">{Number(c.cashback_percent)}%</div>
             <h3>{c.name}</h3>
             <p className="muted row" style={{ gap: 6 }}><LuMapPin size={14} />{c.address || 'Manzil kiritilmagan'}</p>
             <div className="cafe-foot">
@@ -49,7 +48,6 @@ function CafeModal({ cafe, onClose, onDone }) {
       <form className="form" onSubmit={submit}>
         <label className="field"><span>Nomi</span><input value={f.name} onChange={set('name')} placeholder="Coffeegram — Chilonzor" required /></label>
         <label className="field"><span>Manzil</span><input value={f.address || ''} onChange={set('address')} /></label>
-        <label className="field"><span>Cashback foizi (%)</span><input type="number" min="0" max="50" step="0.5" value={f.cashback_percent} onChange={set('cashback_percent')} required /></label>
         <label className="check"><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Faol (o‘chirilsa kassa QR yarata olmaydi)</label>
         {error && <div className="alert err"><LuAlertCircle size={18} />{error}</div>}
         <button className="btn btn-primary btn-lg btn-block" disabled={busy}>{busy ? 'Saqlanmoqda…' : 'Saqlash'}</button>
