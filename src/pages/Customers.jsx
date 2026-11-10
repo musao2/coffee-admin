@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
-import { LuAlertCircle, LuCoffee, LuGift, LuLock, LuMinus, LuPlus, LuSearch, LuStar, LuUnlock, LuUsers } from 'react-icons/lu'
+import { LuAlertCircle, LuCake, LuCoffee, LuGift, LuLock, LuMinus, LuPlus, LuSearch, LuStar, LuUnlock, LuUsers } from 'react-icons/lu'
 import { rpc, useRpc } from '../lib/useRpc'
 import { dateTime, genderLabel, num } from '../lib/format'
 import Modal from '../components/Modal'
 import StampCard from '../components/StampCard'
 import { PageHead } from './AdminPanel'
 import CustomerStats from './CustomerStats'
+import BirthdayPanel, { bdayIn, birthText } from './BirthdayPanel'
 
 const GOAL = 9
 
@@ -22,6 +23,7 @@ export default function Customers() {
     const arr = (data || []).filter((c) => gFilter === 'all' || (gFilter === 'unknown' ? !c.gender : c.gender === gFilter))
     if (sort === 'top') arr.sort((a, b) => b.coffees_total - a.coffees_total || b.tx_count - a.tx_count)
     else if (sort === 'free') return arr.filter((c) => c.free_available > 0).sort((a, b) => b.free_available - a.free_available)
+    else if (sort === 'bday') return arr.filter((c) => c.bday_in != null).sort((a, b) => a.bday_in - b.bday_in)
     return arr
   }, [data, sort, gFilter])
 
@@ -34,10 +36,12 @@ export default function Customers() {
     <div className="page">
       <PageHead title="Mijozlar" icon={LuUsers} sub={data ? `${data.length} ta mijoz · kofe kartochkalari` : ''} />
       <CustomerStats active={gFilter} onFilter={setGFilter} />
-      <div className="seg" style={{ maxWidth: 520 }}>
+      <BirthdayPanel limit={5} />
+      <div className="seg" style={{ maxWidth: 680 }}>
         <button className={sort === 'top' ? 'on' : ''} onClick={() => setSort('top')}>Eng ko‘p xarid</button>
         <button className={sort === 'new' ? 'on' : ''} onClick={() => setSort('new')}>Yangilar</button>
         <button className={sort === 'free' ? 'on' : ''} onClick={() => setSort('free')}>Bepul kofesi bor</button>
+        <button className={sort === 'bday' ? 'on' : ''} onClick={() => setSort('bday')}><LuCake size={14} /> Tug‘ilgan kun</button>
       </div>
       <form onSubmit={(e) => { e.preventDefault(); setSearch(q) }} className="search">
         <LuSearch size={16} />
@@ -49,7 +53,7 @@ export default function Customers() {
       {data?.length > 0 && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>№</th><th>Mijoz</th><th>Telefon</th><th>Jins</th><th className="r">Yosh</th><th>Kartochka</th><th className="r">Bepul</th><th className="r">Jami kofe</th><th>Sevimli</th><th>Oxirgi tashrif</th><th>Holat</th><th /></tr></thead>
+            <thead><tr><th>№</th><th>Mijoz</th><th>Telefon</th><th>Jins</th><th className="r">Yosh</th><th>Tug‘ilgan kun</th><th>Kartochka</th><th className="r">Bepul</th><th className="r">Jami kofe</th><th>Sevimli</th><th>Oxirgi tashrif</th><th>Holat</th><th /></tr></thead>
             <tbody>
               {list.map((c, i) => (
                 <tr key={c.id} className={c.is_active ? '' : 'dim'}>
@@ -57,7 +61,8 @@ export default function Customers() {
                   <td className="primary" data-label="Mijoz">{c.full_name || '—'}<span className="sub">{dateTime(c.created_at)} dan</span></td>
                   <td data-label="Telefon">{c.phone}</td>
                   <td data-label="Jins">{c.gender ? <span className={`tag ${c.gender === 'female' ? 'amber' : 'dark'}`}>{genderLabel[c.gender]}</span> : <span className="muted small">—</span>}</td>
-                  <td data-label="Yosh" className="r num">{c.age ?? '—'}{c.birth_year && <span className="sub">{c.birth_year}</span>}</td>
+                  <td data-label="Yosh" className="r num">{c.age ?? '—'}</td>
+                  <td data-label="Tug‘ilgan kun">{c.birth_date ? <>{birthText(c.birth_date)}<span className="sub">{bdayIn(c.bday_in)}</span></> : c.birth_year ? <>{c.birth_year}<span className="sub">kuni kiritilmagan</span></> : <span className="muted small">—</span>}</td>
                   <td data-label="Kartochka">
                     <span className="mini-stamps" title={`${c.stamps}/${GOAL}`}>
                       {Array.from({ length: GOAL }, (_, i) => <i key={i} className={i < c.stamps ? 'on' : ''} />)}

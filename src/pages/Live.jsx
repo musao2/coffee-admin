@@ -9,6 +9,7 @@ import Stat from '../components/Stat'
 import ReceiptModal from '../components/Receipt'
 import { PageHead } from './AdminPanel'
 import GenderPanel from './GenderPanel'
+import BirthdayPanel from './BirthdayPanel'
 
 const REFRESH_MS = 5000
 
@@ -150,6 +151,7 @@ export default function Live({ onOpenTab }) {
         </section>
 
         <div className="stack" style={{ gap: 16 }}>
+          <BirthdayPanel onOpenTab={onOpenTab} />
           <GenderPanel demo={live?.demo} onOpenTab={onOpenTab} />
           <section className="panel">
             <div className="panel-head"><h3><LuQrCode size={18} /> Ochiq QR’lar</h3><span className="tag pending">{live?.open_qr?.length ?? '…'}</span></div>
