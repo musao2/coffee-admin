@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { LuAlertCircle, LuCoffee, LuGift, LuLock, LuMinus, LuPlus, LuSearch, LuStar, LuUnlock, LuUsers } from 'react-icons/lu'
 import { rpc, useRpc } from '../lib/useRpc'
-import { dateTime, num } from '../lib/format'
+import { dateTime, genderLabel, num } from '../lib/format'
 import Modal from '../components/Modal'
 import StampCard from '../components/StampCard'
 import { PageHead } from './AdminPanel'
+import CustomerStats from './CustomerStats'
 
 const GOAL = 9
 
@@ -12,7 +13,17 @@ export default function Customers() {
   const [q, setQ] = useState('')
   const [search, setSearch] = useState('')
   const [adjust, setAdjust] = useState(null)
+  const [sort, setSort] = useState('top')
+  const [gFilter, setGFilter] = useState('all')
   const { data, error, loading, reload } = useRpc('admin_customers', { p_search: search || null, p_limit: 300 }, [search])
+
+  // tartiblash: eng ko'p xarid (kofe soni, keyin cheklar), yangilar, bepul kofesi borlar
+  const list = useMemo(() => {
+    const arr = (data || []).filter((c) => gFilter === 'all' || (gFilter === 'unknown' ? !c.gender : c.gender === gFilter))
+    if (sort === 'top') arr.sort((a, b) => b.coffees_total - a.coffees_total || b.tx_count - a.tx_count)
+    else if (sort === 'free') return arr.filter((c) => c.free_available > 0).sort((a, b) => b.free_available - a.free_available)
+    return arr
+  }, [data, sort, gFilter])
 
   const toggle = async (c) => {
     if (!window.confirm(`${c.full_name || c.phone} — ${c.is_active ? 'bloklansinmi' : 'faollashtirilsinmi'}?`)) return
@@ -22,6 +33,12 @@ export default function Customers() {
   return (
     <div className="page">
       <PageHead title="Mijozlar" icon={LuUsers} sub={data ? `${data.length} ta mijoz · kofe kartochkalari` : ''} />
+      <CustomerStats active={gFilter} onFilter={setGFilter} />
+      <div className="seg" style={{ maxWidth: 520 }}>
+        <button className={sort === 'top' ? 'on' : ''} onClick={() => setSort('top')}>Eng ko‘p xarid</button>
+        <button className={sort === 'new' ? 'on' : ''} onClick={() => setSort('new')}>Yangilar</button>
+        <button className={sort === 'free' ? 'on' : ''} onClick={() => setSort('free')}>Bepul kofesi bor</button>
+      </div>
       <form onSubmit={(e) => { e.preventDefault(); setSearch(q) }} className="search">
         <LuSearch size={16} />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Telefon yoki ism bo‘yicha qidirish" />
@@ -32,12 +49,15 @@ export default function Customers() {
       {data?.length > 0 && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>Mijoz</th><th>Telefon</th><th>Kartochka</th><th className="r">Bepul</th><th className="r">Jami kofe</th><th>Sevimli</th><th>Oxirgi tashrif</th><th>Holat</th><th /></tr></thead>
+            <thead><tr><th>№</th><th>Mijoz</th><th>Telefon</th><th>Jins</th><th className="r">Yosh</th><th>Kartochka</th><th className="r">Bepul</th><th className="r">Jami kofe</th><th>Sevimli</th><th>Oxirgi tashrif</th><th>Holat</th><th /></tr></thead>
             <tbody>
-              {data.map((c) => (
+              {list.map((c, i) => (
                 <tr key={c.id} className={c.is_active ? '' : 'dim'}>
+                  <td data-label="O‘rin"><span className={`rank-no ${sort === 'top' && i < 3 ? ['gold', 'silver', 'bronze'][i] : ''}`}>{i + 1}</span></td>
                   <td className="primary" data-label="Mijoz">{c.full_name || '—'}<span className="sub">{dateTime(c.created_at)} dan</span></td>
                   <td data-label="Telefon">{c.phone}</td>
+                  <td data-label="Jins">{c.gender ? <span className={`tag ${c.gender === 'female' ? 'amber' : 'dark'}`}>{genderLabel[c.gender]}</span> : <span className="muted small">—</span>}</td>
+                  <td data-label="Yosh" className="r num">{c.age ?? '—'}{c.birth_year && <span className="sub">{c.birth_year}</span>}</td>
                   <td data-label="Kartochka">
                     <span className="mini-stamps" title={`${c.stamps}/${GOAL}`}>
                       {Array.from({ length: GOAL }, (_, i) => <i key={i} className={i < c.stamps ? 'on' : ''} />)}

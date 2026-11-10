@@ -4,6 +4,8 @@ import { useRpc } from '../lib/useRpc'
 import { num, som } from '../lib/format'
 import Stat from '../components/Stat'
 import { PageHead, Period } from './AdminPanel'
+import Demographics from './Demographics'
+import TopCustomers from './TopCustomers'
 
 export default function Dashboard() {
   const [days, setDays] = useState(7)
@@ -20,6 +22,8 @@ export default function Dashboard() {
       </PageHead>
       {error && <div className="alert err"><LuAlertCircle size={18} />{error}</div>}
 
+      <TopCustomers days={days} />
+
       <div className="stats">
         <Stat icon={LuTrendingUp} label="Tushum (to‘langan)" value={v(t?.paid, som)} dark />
         <Stat icon={LuReceipt} label="Cheklar" value={v(t?.count)} />
@@ -30,6 +34,8 @@ export default function Dashboard() {
         <Stat icon={LuUsers} label="Jami mijozlar" value={v(data?.customers_total)} />
         <Stat icon={LuStar} label="Kutilayotgan bepul kofe" value={v(data?.free_outstanding)} hint="Mijozlar hali ishlatmagan" />
       </div>
+
+      <Demographics days={days} />
 
       <h3 className="section-title">Eng ko‘p sotilganlar</h3>
       {data && top.length === 0 ? <div className="empty">Bu davrda savdo yo‘q</div> : (

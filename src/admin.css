@@ -107,3 +107,33 @@
 .mini-stamps b { margin-left: 6px; font-size: 12px; }
 .icon-btn.sm { width: 34px; height: 34px; border-radius: 10px; }
 .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.gender-bar { display: flex; height: 34px; border-radius: 12px; overflow: hidden; background: var(--paper-2); font-size: 12px; font-weight: 700; }
+.gender-bar i { display: grid; place-items: center; font-style: normal; white-space: nowrap; transition: width 0.4s; }
+.gender-bar .m { background: var(--ink); color: var(--paper); }
+.gender-bar .f { background: var(--caramel); color: var(--ink); }
+/* TOP mijozlar */
+.podium { display: grid; gap: 10px; grid-template-columns: 1fr; padding-top: 10px; }
+@media (min-width: 700px) { .podium { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.podium-card { position: relative; display: grid; justify-items: center; text-align: center; gap: 4px; padding: 18px 12px 14px; border-radius: 18px; border: 1.5px solid var(--line); background: var(--paper); min-width: 0; }
+.podium-card.gold { background: linear-gradient(180deg, #fbefd9, var(--card)); border-color: var(--caramel); }
+.podium-card.silver { background: linear-gradient(180deg, #eeeeee, var(--card)); }
+.podium-card.bronze { background: linear-gradient(180deg, #f3e1d3, var(--card)); }
+.podium-card .medal { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-family: var(--head); font-weight: 800; background: var(--ink); color: var(--paper); margin-bottom: 4px; }
+.podium-card.gold .medal { background: var(--caramel); color: var(--ink); }
+.podium-name { font-size: 16px; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.podium-sum { font-family: var(--head); font-weight: 800; font-size: 22px; margin-top: 4px; }
+.rank-no { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper-2); font-weight: 800; font-size: 13px; flex: none; }
+.rank-no.gold { background: var(--caramel); color: var(--ink); }
+.rank-no.silver { background: #d9d9d9; }
+.rank-no.bronze { background: #e7c3a6; }
+.gender-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--line); flex: none; }
+.gender-dot.male { background: var(--ink); }
+.gender-dot.female { background: var(--caramel); }
+.age-mini { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; align-items: end; margin-top: 12px; }
+.age-mini > div { display: grid; justify-items: center; gap: 3px; min-width: 0; }
+.age-col { height: 64px; width: 100%; max-width: 34px; display: flex; align-items: flex-end; background: var(--paper-2); border-radius: 8px; overflow: hidden; }
+.age-col i { display: block; width: 100%; background: var(--ink); border-radius: 8px 8px 0 0; }
+.age-mini b { font-size: 12px; }
+.age-mini small { font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.cust-stats { display: grid; gap: 12px; }
+.gender-bar .u { background: var(--line); color: var(--ink-3); }

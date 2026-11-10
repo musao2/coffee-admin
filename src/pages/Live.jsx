@@ -8,6 +8,7 @@ import { num, som, timeAgo, timeOnly } from '../lib/format'
 import Stat from '../components/Stat'
 import ReceiptModal from '../components/Receipt'
 import { PageHead } from './AdminPanel'
+import GenderPanel from './GenderPanel'
 
 const REFRESH_MS = 5000
 
@@ -16,6 +17,8 @@ const A = {
   qr_created:          { icon: LuQrCode, c: 'amber', g: 'qr', t: (a) => <><b>{a.actor_name}</b> buyurtma QR’ini yaratdi{a.details === 'stamp' ? ` · ${a.amount2 || 0} ta kofe` : a.details === 'spend' ? ' · balansdan' : ' · cashback'}</>, amt: (a) => som(a.amount) },
   order_confirmed:     { icon: LuCoffee, c: 'green', g: 'sale', t: (a) => <><b>{a.customer_name || 'Mijoz'}</b> xarid qildi: {a.details}</>, amt: (a) => <><span className="pos">+{a.amount2} <LuCoffee size={12} /></span><br /><small className="muted">{num(a.amount)}</small></> },
   free_redeemed:       { icon: LuGift, c: 'coffee', g: 'sale', t: (a) => <><b>{a.customer_name || 'Mijoz'}</b> bepul kofe oldi: {a.details}</>, amt: (a) => <><span className="tag amber">bepul</span><br /><small className="muted">{num(a.amount)}</small></> },
+  order_sold:          { icon: LuReceipt, c: 'green', g: 'sale', t: (a) => <><b>{a.actor_name}</b> sotdi (QR skanerlanmadi): {a.details}</>, amt: (a) => <><span className="num">{num(a.amount)}</span><br /><small className="muted">mijozsiz</small></> },
+  stamps_claimed:      { icon: LuCoffee, c: 'amber', g: 'customer', t: (a) => <><b>{a.customer_name || 'Mijoz'}</b> chek №{a.receipt_no} QR’ini keyin skanerlab shtamp oldi</>, amt: (a) => <span className="pos">+{a.amount2} <LuCoffee size={12} /></span> },
   expense_added:       { icon: LuWallet, c: 'coffee', g: 'expense', t: (a) => <><b>{a.actor_name}</b> xarajat kiritdi: {a.details}</>, amt: (a) => <span className="neg">−{num(a.amount)}</span> },
   expense_cancelled:   { icon: LuBan, c: 'red', g: 'expense', t: (a) => <><b>{a.actor_name}</b> xarajatni bekor qildi: {a.details}</>, amt: (a) => <span style={{ textDecoration: 'line-through' }}>{num(a.amount)}</span> },
   stamps_adjusted:     { icon: LuStar, c: 'purple', g: 'customer', t: (a) => <><b>{a.actor_name}</b> {a.customer_name} kartochkasini tuzatdi</>, amt: (a) => <span className={a.amount > 0 ? 'pos' : 'neg'}>{a.amount > 0 ? '+' : ''}{a.amount} shtamp</span> },
@@ -56,6 +59,7 @@ export default function Live({ onOpenTab }) {
         rpc('admin_activity', { p_limit: lastId.current ? 100 : 150, p_after: lastId.current }),
       ])
       try { l.expenses = await rpc('admin_expenses', { p_days: 1 }) } catch { l.expenses = null }
+      try { l.demo = await rpc('admin_demographics', { p_days: 1 }) } catch { l.demo = null }
       setLive(l)
       if (items.length) {
         if (lastId.current) setFresh(new Set(items.map((i) => i.id)))
@@ -146,6 +150,7 @@ export default function Live({ onOpenTab }) {
         </section>
 
         <div className="stack" style={{ gap: 16 }}>
+          <GenderPanel demo={live?.demo} onOpenTab={onOpenTab} />
           <section className="panel">
             <div className="panel-head"><h3><LuQrCode size={18} /> Ochiq QR’lar</h3><span className="tag pending">{live?.open_qr?.length ?? '…'}</span></div>
             <div className="panel-body">

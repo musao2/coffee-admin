@@ -80,7 +80,7 @@ export default function Transactions() {
                   <td className="primary" data-label="Chek">{r.receipt_no ? `№${r.receipt_no}` : 'QR (tasdiqlanmagan)'}</td>
                   <td data-label="Vaqt">{dateTime(r.confirmed_at || r.created_at)}</td>
                   <td data-label="Kofexona">{r.cafe_name || '—'}<span className="sub">{r.cashier_name}</span></td>
-                  <td data-label="Mijoz">{r.customer_name || '—'}<span className="sub">{r.customer_phone}</span></td>
+                  <td data-label="Mijoz">{r.status === 'sold' ? <span className="tag sold">mijozsiz</span> : <>{r.customer_name || '—'}<span className="sub">{r.customer_phone}</span></>}</td>
                   <td data-label="Buyurtma">{r.type === 'stamp' ? ((r.items || []).map((i) => `${i.qty}× ${i.name}`).join(', ') || '—') : <span className={`tag ${r.type}`}>{typeLabel[r.type]}</span>}{r.free_used > 0 && <span className="sub">bepul: −{num(r.discount)}</span>}</td>
                   <td data-label="Holat"><span className={`tag ${r.status}`}>{statusLabel[r.status]}</span></td>
                   <td data-label="To‘lov" className="r num">{r.type === 'adjust' ? '—' : num(r.amount - (r.discount || 0) - (r.balance_used || 0))}</td>
@@ -97,7 +97,7 @@ export default function Transactions() {
 
       {receiptId && (
         <ReceiptModal id={receiptId} onClose={() => setReceiptId(null)}
-          actions={(r) => r.status === 'confirmed' && <button className="btn btn-danger" onClick={() => setReverseTx(r)}><LuRotateCcw size={17} /> Chekni bekor qilish</button>} />
+          actions={(r) => (r.status === 'confirmed' || r.status === 'sold') && <button className="btn btn-danger" onClick={() => setReverseTx(r)}><LuRotateCcw size={17} /> Chekni bekor qilish</button>} />
       )}
       {reverseTx && (
         <ReasonModal title={`Chek №${reverseTx.receipt_no} ni bekor qilish`}
