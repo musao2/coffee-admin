@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  LuActivity, LuClipboardList, LuCoffee, LuLayoutDashboard, LuLogOut, LuReceipt, LuStore, LuUserCog, LuUsers, LuWallet,
+  LuActivity, LuClipboardList, LuClock, LuCoffee, LuLayoutDashboard, LuLogOut, LuReceipt, LuStore, LuUserCog, LuUsers, LuWallet,
 } from 'react-icons/lu'
 import { useAuth } from '../lib/auth'
 import { supabase } from '../lib/supabase'
@@ -13,11 +13,13 @@ import Cafes from './Cafes'
 import Staff from './Staff'
 import Menu from './Menu'
 import AdminExpenses from './AdminExpenses'
+import Shifts from './Shifts'
 
 export const TABS = [
   ['live', LuActivity, 'Jonli'],
   ['tx', LuReceipt, 'Cheklar'],
   ['expenses', LuWallet, 'Xarajatlar'],
+  ['shifts', LuClock, 'Smenalar'],
   ['customers', LuUsers, 'Mijozlar'],
   ['dashboard', LuLayoutDashboard, 'Hisobot'],
   ['cafes', LuStore, 'Kofexonalar'],
@@ -73,6 +75,7 @@ export default function AdminPanel() {
         {tab === 'dashboard' && <Dashboard />}
         {tab === 'tx' && <Transactions />}
         {tab === 'expenses' && <AdminExpenses />}
+        {tab === 'shifts' && <Shifts />}
         {tab === 'customers' && <Customers />}
         {tab === 'cafes' && <Cafes />}
         {tab === 'staff' && <Staff />}

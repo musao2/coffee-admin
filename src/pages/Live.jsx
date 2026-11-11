@@ -20,6 +20,8 @@ const A = {
   free_redeemed:       { icon: LuGift, c: 'coffee', g: 'sale', t: (a) => <><b>{a.customer_name || 'Mijoz'}</b> bepul kofe oldi: {a.details}</>, amt: (a) => <><span className="tag amber">bepul</span><br /><small className="muted">{num(a.amount)}</small></> },
   order_sold:          { icon: LuReceipt, c: 'green', g: 'sale', t: (a) => <><b>{a.actor_name}</b> sotdi (QR skanerlanmadi): {a.details}</>, amt: (a) => <><span className="num">{num(a.amount)}</span><br /><small className="muted">mijozsiz</small></> },
   stamps_claimed:      { icon: LuCoffee, c: 'amber', g: 'customer', t: (a) => <><b>{a.customer_name || 'Mijoz'}</b> chek №{a.receipt_no} QR’ini keyin skanerlab shtamp oldi</>, amt: (a) => <span className="pos">+{a.amount2} <LuCoffee size={12} /></span> },
+  shift_opened:        { icon: LuUnlock, c: 'green', g: 'shift', t: (a) => <><b>{a.actor_name}</b> smenani ochdi · {a.details} · boshlang‘ich naqd {som(a.amount)}</> },
+  shift_closed:        { icon: LuLock, c: 'dark', g: 'shift', t: (a) => <><b>{a.actor_name}</b> smenani yopdi · {a.details} · {a.amount2 === 0 ? 'kassa to‘g‘ri' : a.amount2 > 0 ? `ortiqcha ${som(a.amount2)}` : `kamomad ${som(-a.amount2)}`}</>, amt: (a) => <span className="pos">{num(a.amount)}</span> },
   expense_added:       { icon: LuWallet, c: 'coffee', g: 'expense', t: (a) => <><b>{a.actor_name}</b> xarajat kiritdi: {a.details}</>, amt: (a) => <span className="neg">−{num(a.amount)}</span> },
   expense_cancelled:   { icon: LuBan, c: 'red', g: 'expense', t: (a) => <><b>{a.actor_name}</b> xarajatni bekor qildi: {a.details}</>, amt: (a) => <span style={{ textDecoration: 'line-through' }}>{num(a.amount)}</span> },
   stamps_adjusted:     { icon: LuStar, c: 'purple', g: 'customer', t: (a) => <><b>{a.actor_name}</b> {a.customer_name} kartochkasini tuzatdi</>, amt: (a) => <span className={a.amount > 0 ? 'pos' : 'neg'}>{a.amount > 0 ? '+' : ''}{a.amount} shtamp</span> },
@@ -38,8 +40,8 @@ const A = {
   product_created:     { icon: LuCoffee, c: 'coffee', g: 'settings', t: (a) => <><b>{a.actor_name}</b> menyuga qo‘shdi</>, amt: (a) => num(a.amount) },
   product_updated:     { icon: LuCoffee, c: 'coffee', g: 'settings', t: (a) => <><b>{a.actor_name}</b> menyuni o‘zgartirdi</>, amt: (a) => num(a.amount) },
 }
-const GROUPS = [['all', 'Hammasi'], ['sale', 'Savdo'], ['expense', 'Xarajat'], ['qr', 'QR'], ['customer', 'Mijozlar'], ['staff', 'Xodimlar'], ['settings', 'Sozlamalar']]
-const showDetails = new Set(['user_blocked', 'user_unblocked', 'qr_created', 'qr_cancelled', 'order_confirmed', 'free_redeemed', 'expense_added', 'expense_cancelled'])
+const GROUPS = [['all', 'Hammasi'], ['sale', 'Savdo'], ['expense', 'Xarajat'], ['shift', 'Smena'], ['qr', 'QR'], ['customer', 'Mijozlar'], ['staff', 'Xodimlar'], ['settings', 'Sozlamalar']]
+const showDetails = new Set(['user_blocked', 'user_unblocked', 'qr_created', 'qr_cancelled', 'order_confirmed', 'free_redeemed', 'expense_added', 'expense_cancelled', 'shift_opened', 'shift_closed'])
 
 export default function Live({ onOpenTab }) {
   const [live, setLive] = useState(null)
